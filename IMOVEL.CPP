@@ -1,6 +1,10 @@
 #include "Imovel.h"
 
+static int identificador = 0;
+
 Imovel::Imovel(){
+    identificador++;
+    id = identificador;
     endereco = Endereco();
     valor = tipoOferta = tipoImovel = 0;
 }
@@ -10,6 +14,11 @@ Imovel::~Imovel(){}
 double Imovel::getValor(){
     return valor;
 }
+
+int Imovel::getId(){
+    return id;
+}
+
 int Imovel::getTipoOferta(){
     return tipoOferta;
 }
@@ -22,6 +31,10 @@ Endereco Imovel::getEndereco(){
     return endereco;
 }
 
+std::string Imovel::getTituloAnuncio(){
+    return tituloAnuncio;
+}
+
 void Imovel::setEndereco(std::string logradouro, std::string bairro, std::string cidade, std::string cep, int numero){
     endereco.setLogradouro(logradouro);
     endereco.setBairro(bairro);
@@ -31,7 +44,8 @@ void Imovel::setEndereco(std::string logradouro, std::string bairro, std::string
 }
 
 void Imovel::setTipoOferta(int tipoOferta){
-    this -> tipoOferta = tipoOferta;
+    if(tipoOferta == IMOVEL_PARA_ALUGAR || tipoOferta == IMOVEL_PARA_VENDER)
+        this -> tipoOferta = tipoOferta;
 }
 
 void Imovel::setTipoImovel(int tipoImovel){
@@ -40,4 +54,8 @@ void Imovel::setTipoImovel(int tipoImovel){
 
 void Imovel::setValor(double valor){
     this -> valor = valor;
+}
+
+void Imovel::setTituloAnuncio(std::string tituloAnuncio){
+    this->tituloAnuncio = tituloAnuncio;
 }

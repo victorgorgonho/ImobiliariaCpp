@@ -13,6 +13,8 @@ class Terreno : public Imovel
 
         double getArea();
         void setArea(double area);
+
+        void EditaImovel(std::string novaString, double novoDouble, int modificacao);
 };
 
 #endif // TERRENO_H

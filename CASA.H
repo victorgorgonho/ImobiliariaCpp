@@ -23,6 +23,8 @@ class Casa : public Imovel
         void setNumQuartos(int numQuartos);
         void setAreaTerreno(double areaTerreno);
         void setAreaConstruida(double areaConstruida);
+
+        void EditaImovel(std::string novaString, double novoDouble, int modificacao);
 };
 
 #endif // CASA_H
