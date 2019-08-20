@@ -4,15 +4,9 @@
 
 class Casa : public Imovel
 {
-    protected:
-        int numPavimento;
-        int numQuartos;
-        double areaTerreno;
-        double areaConstruida;
-
     public:
         Casa();
-        std::string getDescricao();
+        //friend std::bool operator == (const Casa& i);
 
         int getNumPavimento();
         int getNumQuartos();
@@ -25,6 +19,14 @@ class Casa : public Imovel
         void setAreaConstruida(double areaConstruida);
 
         void EditaImovel(std::string novaString, double novoDouble, int modificacao);
+        std::string toString();
+        std::string toStringSalvar();
+
+    protected:
+        int numPavimento;
+        int numQuartos;
+        double areaTerreno;
+        double areaConstruida;
 };
 
 #endif // CASA_H
