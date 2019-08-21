@@ -12,8 +12,10 @@ class SistemaImobiliaria{
 	public:
 	    SistemaImobiliaria();
 		void cadastraImovel(Imovel *tImovel);
+		void editaImovel(int id, std::string novaString, double novoValor, int tipoModificacao);
 		void removeImovel(int indice);
 		void printaLista(std::list<Imovel *> lista);
+		void setListaDeImoveis(std::list<Imovel *> lista);
 
         GerenteDePersistencia getControlador();
 

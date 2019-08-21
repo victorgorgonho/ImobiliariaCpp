@@ -4,6 +4,8 @@
 #include "TERRENO.H"
 #include "CASA.H"
 #include <fstream>
+#include <string>
+#include <stdio.h>
 
 using namespace std;
 
@@ -20,7 +22,7 @@ std::list<Imovel *> GerenteDePersistencia::RecuperaListaImoveis(){
         listaDeImovel;
 
     int
-        id, tipoImovel, tipoOferta, numero, numQuartos, vagasGaragem, numPavimento;
+        id, tipoImovel, tipoOferta, numero, numQuartos, vagasGaragem, numPavimento, lixo;
 
     double
         valor, valorCondominio, area, areaConstruida;
@@ -36,25 +38,33 @@ std::list<Imovel *> GerenteDePersistencia::RecuperaListaImoveis(){
         ler.close();
     }
 
-    while(ler.eof()){
+    while(!ler.eof()){
         ler >> id;
         ler >> tipoImovel;
         ler >> valor;
+
         ler >> tipoOferta;
+        ler.ignore();
+        
         getline(ler, tituloAnuncio);
         getline(ler, descricao);
         getline(ler, logradouro);
+        
         ler >> numero;
+        ler.ignore();
+
         getline(ler, bairro);
         getline(ler, cidade);
         getline(ler, cep);
 
         if(tipoImovel == APARTAMENTO){
             getline(ler, posicao);
+        
             ler >> numQuartos;
             ler >> valorCondominio;
             ler >> vagasGaragem;
             ler >> area;
+            ler.ignore();
 
             Apartamento *ap = new Apartamento();
 
@@ -76,6 +86,7 @@ std::list<Imovel *> GerenteDePersistencia::RecuperaListaImoveis(){
 
         if(tipoImovel == TERRENO){
             ler >> area;
+            ler.ignore();
 
             Terreno *te = new Terreno();
 
@@ -94,8 +105,9 @@ std::list<Imovel *> GerenteDePersistencia::RecuperaListaImoveis(){
         if(tipoImovel == CASA){
             ler >> numPavimento;
             ler >> numQuartos;
-            ler >> area;
+            ler >> area;      
             ler >> areaConstruida;
+            ler.ignore();
 
             Casa *casa = new Casa();
 

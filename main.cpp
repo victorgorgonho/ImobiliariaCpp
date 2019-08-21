@@ -43,20 +43,26 @@
 #define SI_BAIRRO 1
 #define SI_CIDADE 2
 #define TITULOANUNCIO 3
+#define SI_PRECO 4
+
 #define MAIOR_QUE 1
 #define MENOR_QUE 2
 
+extern int setIdGlobal(std::list <Imovel *> input);
 extern void menuCasa();
 extern void menuApartamento();
 extern void menuTerreno();
 extern void menuListar(int tipo);
 extern void menuBusca(int tipo);
 extern void menuPreco(int tipo);
+extern int menuSubBusca();
+extern void subBusca(std::list<Imovel *> lista, int tipoBusca, int tipoImovel);
+extern void MenuEditar(int tipo, int id);
 
 extern Imovel * CadastraImovel(int tipoImovel);
 
 //Global
-static int id;
+static int id = 1;
 
 using namespace std;
 
@@ -66,17 +72,13 @@ Imovel *a1 = new Apartamento();
 Imovel *t1 = new Terreno();
 Imovel *c1 = new Casa();
 
-int main()
-{
+int main(){
     int 
         opcao = -1;
 
-    id = 0;
-
     listaGenerica = sistema.getControlador().RecuperaListaImoveis();
-    sistema.printaLista(listaGenerica);
-    PAUSE;
-    CLEAR;
+    sistema.setListaDeImoveis(listaGenerica);
+    id = setIdGlobal(listaGenerica) + 1;
 
     while(opcao){
         cout << "	*** Imoveis ***\n" << endl;
@@ -105,21 +107,30 @@ int main()
                 break;
         }
     }
+    sistema.getControlador().SalvaListaImoveis(sistema.getImoveis());
 
     return 0;
 }
 
+int setIdGlobal(std::list <Imovel *> input){
+    int
+        id;
+
+    for(list<Imovel *>::iterator i = input.begin(); i != input.end(); i++){
+        id = (*i)->getId();
+    }
+    return id;
+}
+
 Imovel * CadastraImovel(int tipoImovel){
     int
-        id, tipoOferta, numero, numQuartos, vagasGaragem, numPavimento;
+        tipoOferta, numero, numQuartos, vagasGaragem, numPavimento;
 
     double
         valor, valorCondominio, area, areaConstruida;
 
     string
         tituloAnuncio, descricao, logradouro, bairro, cidade, cep, posicao;
-
-    id++;
 
     cout << "Digite o valor: ";
     cin >> valor;
@@ -182,7 +193,7 @@ Imovel * CadastraImovel(int tipoImovel){
         ap->setVagasGaragem(vagasGaragem);
         ap->setArea(area);
 
-        ap->setId(id);
+        ap->setId(id++);
 
         return ap;
     }
@@ -203,7 +214,7 @@ Imovel * CadastraImovel(int tipoImovel){
 
         te->setArea(area);
 
-        te->setId(id);
+        te->setId(id++);
 
         return te;
     }
@@ -239,7 +250,7 @@ Imovel * CadastraImovel(int tipoImovel){
         casa->setAreaTerreno(area);
         casa->setAreaConstruida(areaConstruida);
 
-        casa->setId(id);
+        casa->setId(id++);
 
         return casa;
     }
@@ -504,12 +515,10 @@ void menuListar(int tipo){
 
 void menuBusca(int tipo){
 	int
-        opcao = -1;
+        opcao = -1, opcao2, indice;
 
     string
         bairro, cidade, tituloAnuncio;
-    double
-        preco;
 
     while(opcao){ //Exibicao de menu para usuario
         cout << "	*** Opcoes de busca ***\n" << endl;
@@ -527,34 +536,77 @@ void menuBusca(int tipo){
         CLEAR;
 
         switch(opcao){
-            case 1:
+            case SI_BAIRRO:
                 cout << "Digite o bairro: ";
-                cin >> bairro;
+                getline(cin, bairro);
 
                 listaGenerica = sistema.buscaImovel(sistema.getImoveisPorTipo(sistema.getImoveis(), CASA), bairro, SI_BAIRRO);
                 sistema.printaLista(listaGenerica);
                 PAUSE;
-                CLEAR;
+
+                opcao2 = menuSubBusca();
+                    switch (opcao2){
+                    case 1:
+                        subBusca(listaGenerica, SI_BAIRRO, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                    }
                 break;
-            case 2:
-                cout << "Digite o cidade: ";
-                cin >> cidade;
+            case SI_CIDADE:
+                cout << "Digite a cidade: ";
+                getline(cin, cidade);
 
                 listaGenerica = sistema.buscaImovel(sistema.getImoveisPorTipo(sistema.getImoveis(), CASA), cidade, SI_CIDADE);
                 sistema.printaLista(listaGenerica);
                 PAUSE;
-                CLEAR;
+
+                opcao2 = menuSubBusca();
+                    switch (opcao2){
+                    case 1:
+                        subBusca(listaGenerica, SI_CIDADE, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                    }
                 break;
-            case 3:
+            case TITULOANUNCIO:
                 cout << "Digite o titulo anuncio: ";
-                cin >> tituloAnuncio;
+                getline(cin, tituloAnuncio);
 
                 listaGenerica = sistema.buscaImovel(sistema.getImoveisPorTipo(sistema.getImoveis(), CASA), tituloAnuncio, TITULOANUNCIO);
                 sistema.printaLista(listaGenerica);
                 PAUSE;
-                CLEAR;
+
+                opcao2 = menuSubBusca();
+                    switch (opcao2){
+                    case 1:
+                        subBusca(listaGenerica, TITULOANUNCIO, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                        break;
+                    }
                 break;            
-            case 4:
+            case SI_PRECO:
                 menuPreco(tipo);
                 PAUSE;
                 CLEAR;
@@ -566,7 +618,7 @@ void menuBusca(int tipo){
 void menuPreco(int tipo){
 
 	int
-        opcao = -1;
+        opcao = -1, opcao2, indice;
     double
         valor;
 
@@ -595,6 +647,21 @@ void menuPreco(int tipo){
                 sistema.printaLista(listaGenerica);
                 PAUSE;
                 CLEAR;
+                opcao2 = menuSubBusca();
+                    switch (opcao2){
+                    case 1:
+                        CLEAR;
+                        subBusca(listaGenerica, SI_PRECO, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                    }
                 break;
 
             case APARTAMENTO:
@@ -606,6 +673,21 @@ void menuPreco(int tipo){
                 sistema.printaLista(listaGenerica);
                 PAUSE;
                 CLEAR;
+                opcao2 = menuSubBusca();
+                    switch (opcao2){
+                    case 1:
+                        CLEAR;
+                        subBusca(listaGenerica, SI_PRECO, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                    }
                 break;
 
             case TERRENO:
@@ -617,6 +699,21 @@ void menuPreco(int tipo){
                 sistema.printaLista(listaGenerica);
                 PAUSE;
                 CLEAR;
+                opcao2 = menuSubBusca();
+                    switch(opcao2){
+                    case 1:
+                        CLEAR;
+                        subBusca(listaGenerica, SI_PRECO, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                    }
                 break;
             }
             break;
@@ -631,6 +728,21 @@ void menuPreco(int tipo){
                 sistema.printaLista(listaGenerica);
                 PAUSE;
                 CLEAR;
+                opcao2 = menuSubBusca();
+                    switch (opcao2){
+                    case 1:
+                        CLEAR;
+                        subBusca(listaGenerica, SI_PRECO, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                    }
                 break;
 
             case APARTAMENTO:
@@ -642,6 +754,21 @@ void menuPreco(int tipo){
                 sistema.printaLista(listaGenerica);
                 PAUSE;
                 CLEAR;
+                opcao2 = menuSubBusca();
+                    switch (opcao2){
+                    case 1:
+                        CLEAR;
+                        subBusca(listaGenerica, SI_PRECO, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                    }
                 break;
 
             case TERRENO:
@@ -653,6 +780,21 @@ void menuPreco(int tipo){
                 sistema.printaLista(listaGenerica);
                 PAUSE;
                 CLEAR;
+                opcao2 = menuSubBusca();
+                    switch (opcao2){
+                    case 1:
+                        CLEAR;
+                        subBusca(listaGenerica, SI_PRECO, tipo);
+                        break;
+                    case 2:
+                        sistema.printaLista(listaGenerica);
+                        cout << "Digite o ID que deseja editar: ";
+                        cin >> indice;
+
+                        CLEAR;
+                        MenuEditar(tipo, indice);
+                        break;
+                    }
                 break;
             }
         	break;
@@ -660,14 +802,397 @@ void menuPreco(int tipo){
     }
 }
 
-void subBusca(list<Imovel *> lista, int tipo){
+int menuSubBusca(){
+    int
+        opcao = -1, flag = 0;
 
+    while(opcao){ //Exibicao de menu para usuario
+        do{
+            cout << "	*** Opcoes de busca***\n" << endl;
+            cout << "1) Refinar busca" << endl;
+            cout << "2) Editar imovel" << endl;
+            cout << "0) Voltar\n" << endl;
+            cout << "Opcao: ";
+            cin >> opcao;
+            if(opcao < 0 || opcao > 2){
+                CLEAR;
+                cout << "\nInvalido, digite novamente." << endl;
+            }
+        }while(opcao < 0 || opcao > 2);
+        break;
+        CLEAR;
+    }
+    return opcao;
 }
 
-//Editar
-//Consertar ler
-//Consertar remover
-//Consertar ID
-//Testar leitura
-//Busca multipla
-//Caracter especial
+void subBusca(list<Imovel *> lista, int tipoBusca, int tipoImovel){
+	int
+        opcao = -1, escolha;
+    string
+        bairro, cidade, tituloAnuncio;
+    double
+        valor;
+        
+	switch(tipoBusca){
+		case SI_BAIRRO:
+			while(opcao){ //Exibicao de menu para usuario
+		        do{
+                    cout << "	*** Opcoes de busca -> Bairro***\n" << endl;
+                    cout << "1) Buscar por cidade" << endl;
+                    cout << "2) Buscar por titulo anuncio" << endl;
+                    cout << "3) Buscar por preco" << endl;
+                    cout << "0) Voltar\n" << endl;
+		            cout << "Opcao: ";
+		            cin >> opcao;
+		        }while(opcao < 0 || opcao > 3);
+		        FLUSH;
+		        CLEAR;
+		        switch(opcao){
+		        	case SI_CIDADE-1:
+		        		cout << "Digite a cidade: ";
+                		getline(cin, cidade);
+
+                		listaGenerica = sistema.buscaImovel(lista, cidade, SI_CIDADE);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+		        	case TITULOANUNCIO-1:
+		        		cout << "Digite o titulo anuncio: ";
+                		getline(cin, tituloAnuncio);
+
+                		listaGenerica = sistema.buscaImovel(lista, tituloAnuncio, TITULOANUNCIO);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+		        		
+		        	case SI_PRECO-1:
+		        		while(1){						
+							cout << "Digite 1 para valor maximo, ou 2 para valor minimo";
+							cin >> escolha;
+							if(escolha != 1 && escolha != 2){
+								cout << "Erro, digite novamente!" << endl;
+							}else{
+								break;
+							}
+						}
+		        		if(escolha == 1){
+		        			cout << "Digite o valor maximo: ";
+			                cin >> valor;
+			                CLEAR;
+			
+			                listaGenerica = sistema.buscaImovelValor(lista, valor, MENOR_QUE);
+			                sistema.printaLista(listaGenerica);
+			                PAUSE;
+			                CLEAR;
+			                break;
+						}
+						else if(escolha == 2){
+							cout << "Digite o valor minimo: ";
+                			cin >> valor;
+                			CLEAR;
+
+			                listaGenerica = sistema.buscaImovelValor(lista, valor, MAIOR_QUE);
+			                sistema.printaLista(listaGenerica);
+			                PAUSE;
+			                CLEAR;
+			                break;
+						}
+				}
+			}		
+		case SI_CIDADE:
+			while(opcao){ //Exibicao de menu para usuario
+		        cout << "	*** Opcoes de busca -> Cidade***\n" << endl;
+		        cout << "1) Buscar por bairro" << endl;
+		        cout << "2) Buscar por titulo anuncio" << endl;
+		        cout << "3) Buscar por preco" << endl;
+		        cout << "0) Voltar\n" << endl;
+		
+		        do{
+		            cout << "Opcao: ";
+		            cin >> opcao;
+		        }while(opcao < 0 || opcao > 3);
+		        FLUSH;
+		        CLEAR;
+		        switch(opcao){
+		        	case SI_BAIRRO:
+		        		cout << "Digite o bairro: ";
+                		getline(cin, bairro);
+
+                		listaGenerica = sistema.buscaImovel(lista, bairro, SI_BAIRRO);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+		        	case TITULOANUNCIO-1:
+		        		cout << "Digite o titulo anuncio: ";
+                		getline(cin, tituloAnuncio);
+
+                		listaGenerica = sistema.buscaImovel(lista, tituloAnuncio, TITULOANUNCIO);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+		        		
+		        	case SI_PRECO-1:
+		        		while(1){						
+							cout << "Digite 1 para valor maximo, ou 2 para valor minimo";
+							cin >> escolha;
+							if(escolha != 1 && escolha != 2){
+								cout << "Erro, digite novamente!" << endl;
+							}else{
+								break;
+							}
+						}
+		        		if(escolha == 1){
+		        			cout << "Digite o valor maximo: ";
+			                cin >> valor;
+			                CLEAR;
+			
+			                listaGenerica = sistema.buscaImovelValor(lista, valor, MENOR_QUE);
+			                sistema.printaLista(listaGenerica);
+			                PAUSE;
+			                CLEAR;
+			                break;
+						}
+						else if(escolha == 2){
+							cout << "Digite o valor minimo: ";
+                			cin >> valor;
+                			CLEAR;
+
+			                listaGenerica = sistema.buscaImovelValor(lista, valor, MAIOR_QUE);
+			                sistema.printaLista(listaGenerica);
+			                PAUSE;
+			                CLEAR;
+			                break;
+						}
+				}
+			}
+		case TITULOANUNCIO:
+			while(opcao){ //Exibicao de menu para usuario
+		        cout << "	*** Opcoes de busca -> Titulo Anuncio***\n" << endl;
+		        cout << "1) Buscar por bairro" << endl;
+		        cout << "2) Buscar por cidade" << endl;
+		        cout << "3) Buscar por preco" << endl;
+		        cout << "0) Voltar\n" << endl;
+		
+		        do{
+		            cout << "Opcao: ";
+		            cin >> opcao;
+		        }while(opcao < 0 || opcao > 3);
+		        FLUSH;
+		        CLEAR;
+		        switch(opcao){
+		        	case SI_BAIRRO:
+		        		cout << "Digite o bairro: ";
+                		getline(cin, bairro);
+
+                		listaGenerica = sistema.buscaImovel(lista, bairro, SI_BAIRRO);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+		        	case SI_CIDADE:
+		        		cout << "Digite a cidade: ";
+                		getline(cin, cidade);
+
+                		listaGenerica = sistema.buscaImovel(lista, cidade, SI_CIDADE);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+		        		
+		        	case SI_PRECO-1:
+		        		while(1){						
+							cout << "Digite 1 para valor maximo, ou 2 para valor minimo";
+							cin >> escolha;
+							if(escolha != 1 && escolha != 2){
+								cout << "Erro, digite novamente!" << endl;
+							}else{
+								break;
+							}
+						}
+		        		if(escolha == 1){
+		        			cout << "Digite o valor maximo: ";
+			                cin >> valor;
+			                CLEAR;
+			
+			                listaGenerica = sistema.buscaImovelValor(lista, valor, MENOR_QUE);
+			                sistema.printaLista(listaGenerica);
+			                PAUSE;
+			                CLEAR;
+			                break;
+						}
+						else if(escolha == 2){
+							cout << "Digite o valor minimo: ";
+                			cin >> valor;
+                			CLEAR;
+
+			                listaGenerica = sistema.buscaImovelValor(lista, valor, MAIOR_QUE);
+			                sistema.printaLista(listaGenerica);
+			                PAUSE;
+			                CLEAR;
+			                break;
+						}
+				}
+			}
+		case SI_PRECO:
+			while(opcao){ //Exibicao de menu para usuario
+		        cout << "	*** Opcoes de busca -> Preco***\n" << endl;
+		        cout << "1) Buscar por bairro" << endl;
+		        cout << "2) Buscar por cidade" << endl;
+		        cout << "3) Buscar por titulo anuncio" << endl;
+		        cout << "0) Voltar\n" << endl;
+		
+		        do{
+		            cout << "Opcao: ";
+		            cin >> opcao;
+		        }while(opcao < 0 || opcao > 3);
+		        FLUSH;
+		        CLEAR;
+		        switch(opcao){
+		        	case SI_BAIRRO:
+		        		cout << "Digite o bairro: ";
+                		getline(cin, bairro);
+
+                		listaGenerica = sistema.buscaImovel(lista, bairro, SI_BAIRRO);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+		        	case SI_CIDADE:
+		        		cout << "Digite a cidade: ";
+                		getline(cin, cidade);
+
+                		listaGenerica = sistema.buscaImovel(lista, cidade, SI_CIDADE);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+		        		
+		        	case TITULOANUNCIO:
+		        		cout << "Digite o titulo anuncio: ";
+                		getline(cin, tituloAnuncio);
+
+                		listaGenerica = sistema.buscaImovel(lista, tituloAnuncio, TITULOANUNCIO);
+                		sistema.printaLista(listaGenerica);
+                		PAUSE;
+                		CLEAR;
+                		break;
+				}
+			}
+	}
+    cout << "Deseja editar algum imovel? Digite 1 para sim, ou 2 para nao: ";
+    cin >> escolha;
+
+    if(escolha == 1){
+        MenuEditar(tipoImovel, escolha);
+    }
+}
+
+void MenuEditar(int tipo, int id){
+    int
+        opcao = -1;
+    string
+        novaString;
+    double
+        novoDouble;
+
+    while(1){
+        cout << "	*** Opcoes de edicao ***\n" << endl;
+        cout << "1) Editar valor" << endl;
+        cout << "2) Editar tipo de oferta (Aluguel ou venda)" << endl;
+        cout << "3) Editar numero do imovel" << endl;
+        cout << "4) Editar titulo anuncio" << endl;
+        cout << "5) Editar descricao" << endl;
+        cout << "6) Editar logradouro" << endl;
+        cout << "7) Editar bairro" << endl;
+        cout << "8) Editar cidade" << endl;
+        cout << "9) Editar cep" << endl;
+
+        if(tipo == APARTAMENTO){
+            cout << "10) Editar numero de quartos" << endl;
+            cout << "11) Editar valor de condominio" << endl;
+            cout << "12) Editar numero de vagas na garagem" << endl;
+            cout << "13) Editar area" << endl;
+            cout << "0) Voltar\n" << endl;
+            cout << "Opcao: ";
+            cin >> opcao;
+
+            CLEAR;
+            if(opcao >= 0 && opcao < 13){
+                break;
+            }else{
+                cout << "Invalido!" << endl;
+            }
+        }
+
+        if(tipo == TERRENO){
+            cout <<"10) Editar area" << endl;
+            cout << "0) Voltar\n" << endl;
+            cout << "Opcao: ";
+            cin >> opcao;
+
+            CLEAR;
+            if(opcao >= 0 && opcao < 10){
+                if(opcao == 10){
+                    opcao = 14;
+                }
+                break;
+            }else{
+                cout << "Invalido!" << endl;
+            }
+        }
+
+        if(tipo == CASA){
+            cout << "10) Editar numero do pavimento" << endl;
+            cout << "11) Editar numero de quartos" << endl;
+            cout << "12) Editar area" << endl;
+            cout << "13) Editar area construida" << endl;
+            cout << "0) Voltar\n" << endl;
+            cout << "Opcao: ";
+            cin >> opcao;
+
+            CLEAR;
+            if(opcao >= 0 && opcao < 13){
+                if(opcao >= 10){
+                    opcao += 5;
+                }
+                break;
+            }else{
+                cout << "Invalido!" << endl;
+            }
+        }
+    }
+    switch(opcao){
+        case 1:
+        case 2:
+        case 3:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+        case 18:
+            cout << "Digite o novo valor: ";
+            cin >> novoDouble;
+            sistema.editaImovel(id, " ", novoDouble, opcao);
+            break;
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+            cout << "Digite a nova string: ";
+            cin >> novaString;
+            sistema.editaImovel(id, novaString, 0, opcao);
+    }
+        
+}
+
+//Caracter especial (franklin)
