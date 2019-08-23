@@ -20,18 +20,20 @@ extern Imovel * CadastraImovel(int tipoImovel);
 //Global
 static int id = 1;
 
-using namespace std;
-
-SistemaImobiliaria sistema;
-list<Imovel *> listaGenerica;
 Imovel *a1 = new Apartamento();
 Imovel *t1 = new Terreno();
 Imovel *c1 = new Casa();
+
+SistemaImobiliaria sistema;
+std::list<Imovel *> listaGenerica;
+
+using namespace std;
 
 int main(){
     int 
         opcao = -1;
 
+    CLEAR;
     listaGenerica = sistema.getControlador().RecuperaListaImoveis();
     sistema.setListaDeImoveis(listaGenerica);
     id = setIdGlobal(listaGenerica) + 1;
