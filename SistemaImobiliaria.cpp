@@ -1,19 +1,4 @@
-#include<bits/stdc++.h>
-
 #include "SistemaImobiliaria.h"
-#include "IMOVEL.H"
-#include "Apartamento.h"
-#include "TERRENO.H"
-#include "CASA.H"
-#include <iostream>
-#include <string>
-
-#define SI_BAIRRO 1
-#define SI_CIDADE 2
-#define TITULOANUNCIO 3
-
-#define MAIOR_QUE 1
-#define MENOR_QUE 2
 
 using namespace std;
 

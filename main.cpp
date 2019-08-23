@@ -1,52 +1,8 @@
-#include <iostream>
-#include <string>
-#include <stdio.h>
-
-#include "IMOVEL.H"
 #include "SistemaImobiliaria.h"
-#include "Apartamento.h"
-#include "TERRENO.H"
-#include "CASA.H"
 
 #define FLUSH fflush(stdin)
 #define CLEAR system("cls")
 #define PAUSE system("pause")
-
-//Todos
-#define DESCRICAO 0
-#define VALOR 1
-#define TIPO_OFERTA 2
-#define TITULO_ANUNCIO 3
-#define RUA 4
-#define NUMERO 5
-#define BAIRRO 6
-#define CIDADE 7
-#define CEP 8
-
-//Apartamento
-#define POSICAO 9
-#define VALOR_CONDOMINIO 10
-#define A_AREA 11
-#define A_NUM_QUARTOS 12
-#define VAGAS_GARAGEM 13
-
-//Casa
-#define NUM_PAVIMENTO 9
-#define NUM_QUARTOS 10
-#define AREA_TERRENO 11
-#define AREA_CONSTRUIDA 12
-
-//Terreno
-#define AREA 9
-
-//Sistema
-#define SI_BAIRRO 1
-#define SI_CIDADE 2
-#define TITULOANUNCIO 3
-#define SI_PRECO 4
-
-#define MAIOR_QUE 1
-#define MENOR_QUE 2
 
 extern int setIdGlobal(std::list <Imovel *> input);
 extern void menuCasa();

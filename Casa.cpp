@@ -2,17 +2,16 @@
 
 using namespace std;
 
-Apartamento::Apartamento(): Imovel(){
-    tipoImovel = APARTAMENTO;
-    posicao = " ";
-    valorCondominio = area = numQuartos = vagasGaragem = 0;
+Casa::Casa(): Imovel(){
+    tipoImovel = CASA;
+    numPavimento = numQuartos = areaConstruida = areaTerreno = 0;
 }
 
-string Apartamento::toString(){
+string Casa::toString(){
     stringstream resumo;
 
     resumo << "Id: " << id 
-           << "\nTipo imovel: " << tipoImovel 
+           << "\nTipo imovel: " << tipoImovel  
            << "\nValor: " << valor 
            << "\nTipo oferta: " << tipoOferta 
            << "\nTitulo anuncio: " << tituloAnuncio 
@@ -22,16 +21,15 @@ string Apartamento::toString(){
            << "\nBairro: " << endereco.getBairro()
            << "\nCidade: " << endereco.getCidade() 
            << "\nCEP: " << endereco.getCep() 
-           << "\nPosicao: " << posicao 
-           << "\nNumQuartos: " << numQuartos
-           << "\nValor condominio: " << valorCondominio 
-           << "\nVagas garagem: " << vagasGaragem 
-           << "\nArea: " << area << endl;
+           << "\nNumPavimento: " << numPavimento 
+           << "\nNumQuartos: " << numQuartos 
+           << "\nArea: " << areaTerreno 
+           << "\nArea construida: " << areaConstruida << endl;
 
     return resumo.str();
 }
 
-string Apartamento::toStringSalvar(){
+string Casa::toStringSalvar(){
     stringstream resumo;
 
     resumo << id << endl 
@@ -45,72 +43,63 @@ string Apartamento::toStringSalvar(){
            << endereco.getBairro() << endl 
            << endereco.getCidade() << endl 
            << endereco.getCep() << endl 
-           << posicao << endl 
-           << numQuartos << endl
-           << valorCondominio << endl 
-           << vagasGaragem << endl 
-           << area << endl;
+           << numPavimento << endl
+           << numQuartos << endl 
+           << areaTerreno << endl 
+           << areaConstruida << endl;
 
     return resumo.str();
 }
 
-std::string Apartamento::getPosicao(){
-    return posicao;
+int Casa::getNumPavimento(){
+    return numPavimento;
 }
 
-double Apartamento::getValorCondominio(){
-    return valorCondominio;
-}
-
-double Apartamento::getArea(){
-    return area;
-}
-
-int Apartamento::getNumQuartos(){
+int Casa::getNumQuartos(){
     return numQuartos;
 }
 
-int Apartamento::getVagasGaragem(){
-        return vagasGaragem;
+double Casa::getAreaTerreno(){
+    return areaConstruida;
 }
 
-void Apartamento::setPosicao(std::string posicao){
-    this->posicao = posicao;
+double Casa::getAreaConstruida(){
+    return areaConstruida;
 }
 
-void Apartamento::setValorCondominio(double valorCondominio){
-    if(valorCondominio < 0)
-        this->valorCondominio = 0;
+void Casa::setNumPavimento(int numPavimento){
+    if(numPavimento <= 0)
+        this->numPavimento = 0;
     else
-        this->valorCondominio = valorCondominio;
+        this->numPavimento = numPavimento;
 }
 
-void Apartamento::setArea(double area){
-    if(area <= 0)
-        this->area = 0;
-    else
-        this->area = area;
-}
-
-void Apartamento::setNumQuartos(int numQuartos){
+void Casa::setNumQuartos(int numQuartos){
     if(numQuartos <= 0)
         this->numQuartos = 0;
     else
         this->numQuartos = numQuartos;
 }
 
-void Apartamento::setVagasGaragem(int vagasGaragem){
-    if(vagasGaragem < 0)
-        this->vagasGaragem = 0;
+void Casa::setAreaTerreno(double areaTerreno){
+    if(areaTerreno <= 0)
+        this->areaTerreno = 0;
     else
-        this->vagasGaragem = vagasGaragem;
+        this->areaTerreno = areaTerreno;
 }
 
-void Apartamento::EditaImovel(string novaString, double novoDouble, int modificacao){
+void Casa::setAreaConstruida(double areaConstruida){
+    if(areaConstruida <= 0)
+        this->areaConstruida = 0;
+    else
+        this->areaConstruida = areaConstruida;
+}
+
+void Casa::EditaImovel(string novaString, double novoDouble, int modificacao){
     switch(modificacao){
         case DESCRICAO:
             setDescricao(descricao);
-            break; 
+            break;
 
         case VALOR:
             setValor(novoDouble);
@@ -145,23 +134,19 @@ void Apartamento::EditaImovel(string novaString, double novoDouble, int modifica
             getEndereco().setCep(novaString);
             break;
 
-        case POSICAO:
-            setPosicao(novaString);
+        case NUM_PAVIMENTO:
+            setNumPavimento(novoDouble);
             break;
 
-        case VALOR_CONDOMINIO:
-            setValorCondominio(novoDouble);
-            break;
-
-        case A_AREA:
-            setArea(novoDouble);
-            break;
-
-        case A_NUM_QUARTOS:
+        case NUM_QUARTOS:
             setNumQuartos(novoDouble);
             break;
 
-        case VAGAS_GARAGEM:
-            setVagasGaragem(novoDouble);
+        case AREA_TERRENO:
+            setAreaTerreno(novoDouble);
+            break;
+
+        case AREA_CONSTRUIDA:
+            setAreaConstruida(novoDouble);
     }
 }

@@ -1,11 +1,4 @@
-#include "IMOVEL.H"
 #include "SistemaImobiliaria.h"
-#include "Apartamento.h"
-#include "TERRENO.H"
-#include "CASA.H"
-#include <fstream>
-#include <string>
-#include <stdio.h>
 
 using namespace std;
 
