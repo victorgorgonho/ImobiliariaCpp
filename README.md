@@ -2,7 +2,7 @@
     :house: :hotel:
 </h1>
 <h1 align="center">
-  Imobiliária em C++
+  Imobiliária
 </h1>
 <p align="center">
   <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/franklinthony/RealEstateCpp">
