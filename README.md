@@ -27,7 +27,7 @@
 
 ## 💻 Projeto
 
-O RealEstate foi um projeto final da disciplina de Linguagem de Programação I (C++) que visou desenvolver uma imobiliária na prática, com recursos inclusos, tais como o cadastro de apartamentos, casas e terrenos.
+O Real Estate foi um projeto final da disciplina de Linguagem de Programação I (C++) que visou desenvolver uma imobiliária na prática, com recursos inclusos, tais como o cadastro de apartamentos, casas e terrenos.
 
 ## 🤔 Como contribuir
 
