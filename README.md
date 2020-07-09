@@ -1,5 +1,5 @@
 <h1 align="center">
-    :house: width="250px" />
+    :house: :hotel:
 </h1>
 
 <h1 align="center">
